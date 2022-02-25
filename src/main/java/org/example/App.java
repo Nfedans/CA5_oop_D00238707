@@ -1,7 +1,7 @@
 package org.example;
 
 /**
- * Nikita Fedans
+ * Nikita Fedans project
  *
  */
 public class App 
