@@ -2,10 +2,8 @@ package org.example;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Nikita Fedans project
@@ -15,6 +13,7 @@ public class App
 {
     Perfume perfume;
     PerfumeManager perfumeManager;
+    WholeSaler wholeSaler;
     //ArrayList<Perfume> perfumes;
 
     public static void main(String[] args)
@@ -27,10 +26,11 @@ public class App
     {
         System.out.println("Projects part 1 - CA5");
         ArrayList<Perfume> perfumes = new ArrayList<>();
-        initialize(perfumes);
+        Map<String, WholeSaler> mapOfOrigin = new HashMap<>();
+        initialize(perfumes, mapOfOrigin);
 
         try {
-            displayMainMenu(perfumes);        // User Interface - Menu
+            displayMainMenu(perfumes, mapOfOrigin);        // User Interface - Menu
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,15 +38,17 @@ public class App
 
     }
 
-    private void displayMainMenu(ArrayList<Perfume> perfumes) throws IOException {
+    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin) throws IOException {
 
         final String MENU_ITEMS = "\nMAIN MENU\n"
                 + "1. View All Perfume\n"
-                + "2. Exit\n"
+                + "2. Retrieve WholeSaler by Perfume\n"
+                + "3. Exit\n"
                 + "Enter Option [1,2]";
 
         final int VIEW_PERFUME = 1;
-        final int EXIT = 2;
+        final int RETRIEVE_WHOLESALER_PERFUME = 2;
+        final int EXIT = 3;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -69,8 +71,17 @@ public class App
                             System.out.println("\tTarget Gender : " + p.getGender());
                             System.out.println("\tStock Available : " + p.getStockLvl());
                         }
-
                             break;
+                    case RETRIEVE_WHOLESALER_PERFUME:
+                        System.out.println(" ___ Find Wholesaler of a Perfume ___  ");
+                        System.out.println("Enter Perfume ID: ");
+                        String id = keyboard.nextLine();
+
+                        WholeSaler ws = mapOfOrigin.get(id);
+                        System.out.println(ws);
+
+
+                        break;
                     case EXIT:
                         System.out.println("Menu Exited");
                         break;
@@ -90,7 +101,7 @@ public class App
 
 
 
-    private void initialize( List list)
+    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin)
     {
         Perfume p1 = new Perfume("p_000001", "Calvin Klein", "One", 50, 34.99, "Male", 131);
         Perfume p2 = new Perfume("p_000002","Calvin Klein", "One", 100, 59.99, "Male", 32);
@@ -103,6 +114,10 @@ public class App
         Perfume p9 = new Perfume("p_000009","Armani", "Code", 100, 80, "Male", 89);
         Perfume p10 = new Perfume("p_000010","Davidoff", "Cool Water", 200, 69.99, "Male", 10);
 
+        WholeSaler ws1 = new WholeSaler("3928436", "1 alex street", "UK");
+        WholeSaler ws2 = new WholeSaler("9562098", "16 Monsoir Avenue", "France");
+        WholeSaler ws3 = new WholeSaler("0765463", "44 Uber Strasse", "Germany");
+
 
         list.add(p1);
         list.add(p2);
@@ -114,13 +129,22 @@ public class App
         list.add(p8);
         list.add(p9);
         list.add(p10);
+
+        mapOfOrigin.put(p1.get_id(), ws2);
+        mapOfOrigin.put(p2.get_id(), ws2);
+        mapOfOrigin.put(p3.get_id(), ws2);
+        mapOfOrigin.put(p4.get_id(), ws1);
+        mapOfOrigin.put(p5.get_id(), ws3);
+        mapOfOrigin.put(p6.get_id(), ws1);
+        mapOfOrigin.put(p7.get_id(), ws2);
+        mapOfOrigin.put(p8.get_id(), ws3);
+        mapOfOrigin.put(p9.get_id(), ws2);
+        mapOfOrigin.put(p10.get_id(), ws1);
+
+
+
     }
 
-    /*
-    public void displayAllPerfumes(List perfumeList) {
-        for (Perfume p : perfumeList) {
-            System.out.println(p.toString());
-        }
-    } */
+
 
 }

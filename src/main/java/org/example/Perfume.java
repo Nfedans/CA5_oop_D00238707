@@ -91,6 +91,19 @@ public class Perfume {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Perfume)) return false;
+        Perfume perfume = (Perfume) o;
+        return get_id().equals(perfume.get_id()) && getBrand().equals(perfume.getBrand()) && getName().equals(perfume.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(get_id(), getBrand(), getName());
+    }
+
+    @Override
     public String toString() {
         return "Perfume{" +
                 "brand='" + brand + '\'' +
