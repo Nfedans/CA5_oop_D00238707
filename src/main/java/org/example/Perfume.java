@@ -3,7 +3,7 @@ package org.example;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Perfume {
+public class Perfume implements Comparable<Perfume>{
 
     private String _id;
     private String brand;
@@ -35,6 +35,36 @@ public class Perfume {
         this.gender = "UNSET";
         this.stockLvl = -1;
     }
+
+
+    // Compare based on price per 1ml of perfume
+    // If 2 perfumes are the same price/size ratio, the larger sized bottle has priority
+    @Override
+    public int compareTo(Perfume p)
+    {
+        double currentP = (this.getPrice() / (double)this.getSize());
+        double paramP = (p.getPrice() / (double)p.getSize());
+
+        boolean PriceSizeComp =
+                currentP == paramP;
+
+        if (PriceSizeComp)
+        {
+            return 0;
+        }
+        else
+        {
+            if (currentP - paramP > 0)
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+    }
+
 
     public String get_id() {
         return _id;

@@ -28,11 +28,12 @@ public class App
         ArrayList<Perfume> perfumes = new ArrayList<>();
         Map<String, WholeSaler> mapOfOrigin = new HashMap<>();
         Map<Integer, Perfume> StockAmountMap = new TreeMap<>();
+        PriorityQueue<Perfume> queue = new PriorityQueue<>();
 
-        initialize(perfumes, mapOfOrigin, StockAmountMap);
+        initialize(perfumes, mapOfOrigin, StockAmountMap, queue);
 
         try {
-            displayMainMenu(perfumes, mapOfOrigin, StockAmountMap);        // User Interface - Menu
+            displayMainMenu(perfumes, mapOfOrigin, StockAmountMap, queue);        // User Interface - Menu
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,19 +41,21 @@ public class App
 
     }
 
-    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap) throws IOException {
+    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> queue) throws IOException {
 
         final String MENU_ITEMS = "\nMAIN MENU\n"
                 + "1. View All Perfume\n"
                 + "2. Retrieve WholeSaler by Perfume\n"
                 + "3. display the objects from the TreeMap\n"
-                + "4. Exit\n"
-                + "Enter Option [1,4]";
+                + "4. PriorityQueue Sequence Simulation\n"
+                + "5. Exit\n"
+                + "Enter Option [1,5]";
 
         final int VIEW_PERFUME = 1;
         final int RETRIEVE_WHOLESALER_PERFUME = 2;
         final int DISPLAY_OBJECTS_FROM_TREEMAP = 3;
-        final int EXIT = 4;
+        final int PRIORITYQUEUE_SEQUENCE_SIMULATION = 4;
+        final int EXIT = 5;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -107,6 +110,30 @@ public class App
 
 
                         break;
+                    case PRIORITYQUEUE_SEQUENCE_SIMULATION:
+                        System.out.println(" ___ Sequence Below ___  ");
+
+                        // add two third-priority elements
+                        queue.add(perfumes.get(0));
+                        queue.add(perfumes.get(1));
+
+                        // add two second-priority level items
+                        queue.add(perfumes.get(7));
+                        queue.add(perfumes.get(8));
+
+                        // remove and display one element
+                        System.out.println("Remove and display a single element");
+                        System.out.println(queue.remove());
+
+                        // add one top-priority element
+                        queue.add(perfumes.get(4));
+
+                        // remove and display all elements in priority order
+                        System.out.println("\nRemove and display all elements");
+                        while ( !queue.isEmpty() ) {
+                            System.out.println(queue.remove());
+                        }
+                        break;
                     case EXIT:
                         System.out.println("Menu Exited");
                         break;
@@ -126,18 +153,18 @@ public class App
 
 
 
-    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap)
+    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> queue)
     {
-        Perfume p1 = new Perfume("p_000001", "Calvin Klein", "One", 50, 34.99, "Male", 131);
-        Perfume p2 = new Perfume("p_000002","Calvin Klein", "One", 100, 59.99, "Male", 32);
-        Perfume p3 = new Perfume("p_000003","Dior", "Sauvage", 50, 64.99, "Male", 288);
-        Perfume p4 = new Perfume("p_000004","Dior", "Sauvage", 100, 110, "Male", 209);
-        Perfume p5 = new Perfume("p_000005","Chanel", "Bleu de chanel", 50, 70, "Male", 138);
-        Perfume p6 = new Perfume("p_000006","Chanel", "Bleu de chanel", 100, 125, "Male", 53);
-        Perfume p7 = new Perfume("p_000007","Dior", "Homme", 50, 44.99, "Male", 51);
-        Perfume p8 = new Perfume("p_000008","Dior", "Homme Sport", 75, 57, "Male", 106);
-        Perfume p9 = new Perfume("p_000009","Armani", "Code", 100, 80, "Male", 89);
-        Perfume p10 = new Perfume("p_000010","Davidoff", "Cool Water", 200, 69.99, "Male", 10);
+        Perfume p1 = new Perfume("p_000001", "Calvin Klein", "One", 50, 34.99, "Male", 131);  // .7
+        Perfume p2 = new Perfume("p_000002","Calvin Klein", "One", 100, 69.98, "Male", 32); // .7
+        Perfume p3 = new Perfume("p_000003","Dior", "Sauvage", 50, 64.99, "Male", 288); // 1.3
+        Perfume p4 = new Perfume("p_000004","Dior", "Sauvage", 100, 110, "Male", 209);  // 1.1
+        Perfume p5 = new Perfume("p_000005","Chanel", "Bleu de chanel", 50, 70, "Male", 138); // 1.4
+        Perfume p6 = new Perfume("p_000006","Chanel", "Bleu de chanel", 100, 125, "Male", 53); //1.25
+        Perfume p7 = new Perfume("p_000007","Dior", "Homme", 50, 44.99, "Male", 51); // 0.9
+        Perfume p8 = new Perfume("p_000008","Dior", "Homme Sport", 75, 60, "Male", 106); // 0.8
+        Perfume p9 = new Perfume("p_000009","Armani", "Code", 100, 80, "Male", 89); // 0.8
+        Perfume p10 = new Perfume("p_000010","Davidoff", "Cool Water", 200, 69.99, "Male", 10); // 0.35
 
         WholeSaler ws1 = new WholeSaler("3928436", "1 alex street", "UK");
         WholeSaler ws2 = new WholeSaler("9562098", "16 Monsoir Avenue", "France");
