@@ -27,10 +27,12 @@ public class App
         System.out.println("Projects part 1 - CA5");
         ArrayList<Perfume> perfumes = new ArrayList<>();
         Map<String, WholeSaler> mapOfOrigin = new HashMap<>();
-        initialize(perfumes, mapOfOrigin);
+        Map<Integer, Perfume> StockAmountMap = new TreeMap<>();
+
+        initialize(perfumes, mapOfOrigin, StockAmountMap);
 
         try {
-            displayMainMenu(perfumes, mapOfOrigin);        // User Interface - Menu
+            displayMainMenu(perfumes, mapOfOrigin, StockAmountMap);        // User Interface - Menu
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,17 +40,19 @@ public class App
 
     }
 
-    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin) throws IOException {
+    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap) throws IOException {
 
         final String MENU_ITEMS = "\nMAIN MENU\n"
                 + "1. View All Perfume\n"
                 + "2. Retrieve WholeSaler by Perfume\n"
-                + "3. Exit\n"
-                + "Enter Option [1,2]";
+                + "3. display the objects from the TreeMap\n"
+                + "4. Exit\n"
+                + "Enter Option [1,4]";
 
         final int VIEW_PERFUME = 1;
         final int RETRIEVE_WHOLESALER_PERFUME = 2;
-        final int EXIT = 3;
+        final int DISPLAY_OBJECTS_FROM_TREEMAP = 3;
+        final int EXIT = 4;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -79,6 +83,27 @@ public class App
 
                         WholeSaler ws = mapOfOrigin.get(id);
                         System.out.println(ws);
+                        break;
+                    case DISPLAY_OBJECTS_FROM_TREEMAP:
+                        System.out.println(" ___ Displaying Treemap Objects ___ ");
+                        //System.out.println(StockAmountMap);
+
+                        for (Map.Entry<Integer, Perfume> entry : StockAmountMap.entrySet()) {
+                            System.out.println("Key: " + entry.getKey() + ".\t Value: " + entry.getValue());
+                        }
+
+
+                        /* Working, but just spits out in same order as was put in
+                        * The reason: the treemap naturally sorts by key, not value
+                        *  Write logic to map treemap sort by value via a comparator*/
+
+
+
+                        /* Write a treemap with <K, V> of <Integer (StockLvl), Perfume>
+                        * And use that as feature 3*/
+
+
+
 
 
                         break;
@@ -101,7 +126,7 @@ public class App
 
 
 
-    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin)
+    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap)
     {
         Perfume p1 = new Perfume("p_000001", "Calvin Klein", "One", 50, 34.99, "Male", 131);
         Perfume p2 = new Perfume("p_000002","Calvin Klein", "One", 100, 59.99, "Male", 32);
@@ -140,6 +165,19 @@ public class App
         mapOfOrigin.put(p8.get_id(), ws3);
         mapOfOrigin.put(p9.get_id(), ws2);
         mapOfOrigin.put(p10.get_id(), ws1);
+
+        StockAmountMap.put(p1.getStockLvl(), p1);
+        StockAmountMap.put(p2.getStockLvl(), p2);
+        StockAmountMap.put(p3.getStockLvl(), p3);
+        StockAmountMap.put(p4.getStockLvl(), p4);
+        StockAmountMap.put(p5.getStockLvl(), p5);
+        StockAmountMap.put(p6.getStockLvl(), p6);
+        StockAmountMap.put(p7.getStockLvl(), p7);
+        StockAmountMap.put(p8.getStockLvl(), p8);
+        StockAmountMap.put(p9.getStockLvl(), p9);
+        StockAmountMap.put(p10.getStockLvl(), p10);
+
+
 
 
 
