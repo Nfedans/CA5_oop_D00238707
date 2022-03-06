@@ -1,9 +1,8 @@
 package org.example;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.Map.Entry;
+import java.util.PriorityQueue;
 
 /**
  * Nikita Fedans project
@@ -12,9 +11,7 @@ import java.util.Map.Entry;
 public class App 
 {
     Perfume perfume;
-    PerfumeManager perfumeManager;
     WholeSaler wholeSaler;
-    //ArrayList<Perfume> perfumes;
 
     public static void main(String[] args)
     {
@@ -29,11 +26,12 @@ public class App
         Map<String, WholeSaler> mapOfOrigin = new HashMap<>();
         Map<Integer, Perfume> StockAmountMap = new TreeMap<>();
         PriorityQueue<Perfume> queue = new PriorityQueue<>();
+        PriorityQueue<Perfume> twoFieldQueue = new PriorityQueue<>(new BrandStockComparator());
 
-        initialize(perfumes, mapOfOrigin, StockAmountMap, queue);
+        initialize(perfumes, mapOfOrigin, StockAmountMap, twoFieldQueue);
 
         try {
-            displayMainMenu(perfumes, mapOfOrigin, StockAmountMap, queue);        // User Interface - Menu
+            displayMainMenu(perfumes, mapOfOrigin, StockAmountMap, queue, twoFieldQueue);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,21 +39,23 @@ public class App
 
     }
 
-    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> queue) throws IOException {
+    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> queue, PriorityQueue<Perfume> twoFieldQueue) throws IOException {
 
         final String MENU_ITEMS = "\nMAIN MENU\n"
                 + "1. View All Perfume\n"
                 + "2. Retrieve WholeSaler by Perfume\n"
                 + "3. display the objects from the TreeMap\n"
                 + "4. PriorityQueue Sequence Simulation\n"
-                + "5. Exit\n"
-                + "Enter Option [1,5]";
+                + "5. PriorityQueue Two-Field (Brand, stockLvl)\n"
+                + "6. Exit\n"
+                + "Enter Option [1,6]";
 
         final int VIEW_PERFUME = 1;
         final int RETRIEVE_WHOLESALER_PERFUME = 2;
         final int DISPLAY_OBJECTS_FROM_TREEMAP = 3;
         final int PRIORITYQUEUE_SEQUENCE_SIMULATION = 4;
-        final int EXIT = 5;
+        final int PRIORITYQUEUE_BRAND_STOCK = 5;
+        final int EXIT = 6;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -89,26 +89,10 @@ public class App
                         break;
                     case DISPLAY_OBJECTS_FROM_TREEMAP:
                         System.out.println(" ___ Displaying Treemap Objects ___ ");
-                        //System.out.println(StockAmountMap);
 
                         for (Map.Entry<Integer, Perfume> entry : StockAmountMap.entrySet()) {
                             System.out.println("Key: " + entry.getKey() + ".\t Value: " + entry.getValue());
                         }
-
-
-                        /* Working, but just spits out in same order as was put in
-                        * The reason: the treemap naturally sorts by key, not value
-                        *  Write logic to map treemap sort by value via a comparator*/
-
-
-
-                        /* Write a treemap with <K, V> of <Integer (StockLvl), Perfume>
-                        * And use that as feature 3*/
-
-
-
-
-
                         break;
                     case PRIORITYQUEUE_SEQUENCE_SIMULATION:
                         System.out.println(" ___ Sequence Below ___  ");
@@ -134,16 +118,23 @@ public class App
                             System.out.println(queue.remove());
                         }
                         break;
+                    case PRIORITYQUEUE_BRAND_STOCK:
+                        System.out.println("Priority queue, sorting by brand name alphabetically & stockLevel, high to low");
+
+                        while ( !twoFieldQueue.isEmpty() ) {
+                            System.out.println(twoFieldQueue.remove());
+                        }
+                        break;
                     case EXIT:
                         System.out.println("Menu Exited");
                         break;
                     default:
-                        System.out.print("Invalid option - please enter number in range");
+                        System.out.print("Invalid option - please enter number in range [1,6]");
                         break;
                 }
 
             } catch (InputMismatchException | NumberFormatException e) {
-                System.out.print("Invalid option - please enter number in range");
+                System.out.print("Invalid option - please enter number in range [1,6]");
             }
         } while (option != EXIT);
 
@@ -151,9 +142,7 @@ public class App
 
     }
 
-
-
-    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> queue)
+    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> twoFieldQueue)
     {
         Perfume p1 = new Perfume("p_000001", "Calvin Klein", "One", 50, 34.99, "Male", 131);  // .7
         Perfume p2 = new Perfume("p_000002","Calvin Klein", "One", 100, 69.98, "Male", 32); // .7
@@ -169,7 +158,6 @@ public class App
         WholeSaler ws1 = new WholeSaler("3928436", "1 alex street", "UK");
         WholeSaler ws2 = new WholeSaler("9562098", "16 Monsoir Avenue", "France");
         WholeSaler ws3 = new WholeSaler("0765463", "44 Uber Strasse", "Germany");
-
 
         list.add(p1);
         list.add(p2);
@@ -204,10 +192,16 @@ public class App
         StockAmountMap.put(p9.getStockLvl(), p9);
         StockAmountMap.put(p10.getStockLvl(), p10);
 
-
-
-
-
+        twoFieldQueue.add(p1);
+        twoFieldQueue.add(p2);
+        twoFieldQueue.add(p3);
+        twoFieldQueue.add(p4);
+        twoFieldQueue.add(p5);
+        twoFieldQueue.add(p6);
+        twoFieldQueue.add(p7);
+        twoFieldQueue.add(p8);
+        twoFieldQueue.add(p9);
+        twoFieldQueue.add(p10);
     }
 
 
