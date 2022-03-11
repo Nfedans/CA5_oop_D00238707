@@ -1,0 +1,16 @@
+In the menu inside App.java:
+
+switch case - VIEW_PERFUME:
+I used an arraylist and iterated through all the contents of the arraylist - O(n)
+
+switch case - RETRIEVE_WHOLESALER_PERFUME:
+I used a hashmap and performed a single operation - O(1)
+
+switch case - DISPLAY_OBJECTS_FROM_TREEMAP:
+I used a treemap -  O(logN)
+
+switch case - PRIORITYQUEUE_SEQUENCE_SIMULATION:
+I used a priority queue -  O(log N)
+
+switch case - PRIORITYQUEUE_BRAND_STOCK:
+I used a priority queue -  O(log N)

@@ -4,14 +4,20 @@ import java.io.IOException;
 import java.util.*;
 import java.util.PriorityQueue;
 
+import static java.lang.Math.round;
+
 /**
  * Nikita Fedans project
  *
  */
 public class App 
 {
-    Perfume perfume;
-    WholeSaler wholeSaler;
+    List<Perfume> perfumes;
+    Map<String, WholeSaler> mapOfOrigin;
+    Map<Integer, Perfume> StockAmountMap;
+    PriorityQueue<Perfume> queue;
+    PriorityQueue<Perfume> twoFieldQueue;
+
 
     public static void main(String[] args)
     {
@@ -22,16 +28,15 @@ public class App
     public void start()
     {
         System.out.println("Projects part 1 - CA5");
-        ArrayList<Perfume> perfumes = new ArrayList<>();
-        Map<String, WholeSaler> mapOfOrigin = new HashMap<>();
-        Map<Integer, Perfume> StockAmountMap = new TreeMap<>();
-        PriorityQueue<Perfume> queue = new PriorityQueue<>();
-        PriorityQueue<Perfume> twoFieldQueue = new PriorityQueue<>(new BrandStockComparator());
-
-        initialize(perfumes, mapOfOrigin, StockAmountMap, twoFieldQueue);
+        this.perfumes = new ArrayList<>();
+        this.mapOfOrigin = new HashMap<>();
+        this.StockAmountMap = new TreeMap<>();
+        this.queue = new PriorityQueue<>();
+        this.twoFieldQueue = new PriorityQueue<>(new BrandStockComparator());
+        initialize();
 
         try {
-            displayMainMenu(perfumes, mapOfOrigin, StockAmountMap, queue, twoFieldQueue);
+            displayMainMenu();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,7 +44,7 @@ public class App
 
     }
 
-    private void displayMainMenu(ArrayList<Perfume> perfumes, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> queue, PriorityQueue<Perfume> twoFieldQueue) throws IOException {
+    private void displayMainMenu() throws IOException {
 
         final String MENU_ITEMS = "\nMAIN MENU\n"
                 + "1. View All Perfume\n"
@@ -67,63 +72,26 @@ public class App
                 switch (option) {
                     case VIEW_PERFUME:
                         System.out.println(" ___ List of all Perfumes ___  ");
-
-                        for(Perfume p: perfumes) {
-                            System.out.println("------------------------------");
-                            System.out.println("\tID : " + p.get_id());
-                            System.out.println("\tBrand : " + p.getBrand());
-                            System.out.println("\tName : " + p.getName());
-                            System.out.println("\tBottle size (ml) : " + p.getSize());
-                            System.out.println("\tPrice : €" + p.getPrice());
-                            System.out.println("\tTarget Gender : " + p.getGender());
-                            System.out.println("\tStock Available : " + p.getStockLvl());
-                        }
+                        displayList(perfumes);
                             break;
                     case RETRIEVE_WHOLESALER_PERFUME:
                         System.out.println(" ___ Find Wholesaler of a Perfume ___  ");
                         System.out.println("Enter Perfume ID: ");
                         String id = keyboard.nextLine();
-
                         WholeSaler ws = mapOfOrigin.get(id);
                         System.out.println(ws);
                         break;
                     case DISPLAY_OBJECTS_FROM_TREEMAP:
                         System.out.println(" ___ Displaying Treemap Objects ___ ");
-
-                        for (Map.Entry<Integer, Perfume> entry : StockAmountMap.entrySet()) {
-                            System.out.println("Key: " + entry.getKey() + ".\t Value: " + entry.getValue());
-                        }
+                        displayStockAmountMap();
                         break;
                     case PRIORITYQUEUE_SEQUENCE_SIMULATION:
                         System.out.println(" ___ Sequence Below ___  ");
-
-                        // add two third-priority elements
-                        queue.add(perfumes.get(0));
-                        queue.add(perfumes.get(1));
-
-                        // add two second-priority level items
-                        queue.add(perfumes.get(7));
-                        queue.add(perfumes.get(8));
-
-                        // remove and display one element
-                        System.out.println("Remove and display a single element");
-                        System.out.println(queue.remove());
-
-                        // add one top-priority element
-                        queue.add(perfumes.get(4));
-
-                        // remove and display all elements in priority order
-                        System.out.println("\nRemove and display all elements");
-                        while ( !queue.isEmpty() ) {
-                            System.out.println(queue.remove());
-                        }
+                        priorityQueueSequence();
                         break;
                     case PRIORITYQUEUE_BRAND_STOCK:
-                        System.out.println("Priority queue, sorting by brand name alphabetically & stockLevel, high to low");
-
-                        while ( !twoFieldQueue.isEmpty() ) {
-                            System.out.println(twoFieldQueue.remove());
-                        }
+                        System.out.println("Priority queue, sorting by brand name alphabetically & stockLevel, low to high");
+                        displayTwoFieldQueue();
                         break;
                     case EXIT:
                         System.out.println("Menu Exited");
@@ -142,7 +110,7 @@ public class App
 
     }
 
-    private void initialize( List list, Map<String, WholeSaler> mapOfOrigin, Map<Integer, Perfume> StockAmountMap, PriorityQueue<Perfume> twoFieldQueue)
+    private void initialize()
     {
         Perfume p1 = new Perfume("p_000001", "Calvin Klein", "One", 50, 34.99, "Male", 131);  // .7
         Perfume p2 = new Perfume("p_000002","Calvin Klein", "One", 100, 69.98, "Male", 32); // .7
@@ -159,16 +127,16 @@ public class App
         WholeSaler ws2 = new WholeSaler("9562098", "16 Monsoir Avenue", "France");
         WholeSaler ws3 = new WholeSaler("0765463", "44 Uber Strasse", "Germany");
 
-        list.add(p1);
-        list.add(p2);
-        list.add(p3);
-        list.add(p4);
-        list.add(p5);
-        list.add(p6);
-        list.add(p7);
-        list.add(p8);
-        list.add(p9);
-        list.add(p10);
+        perfumes.add(p1);
+        perfumes.add(p2);
+        perfumes.add(p3);
+        perfumes.add(p4);
+        perfumes.add(p5);
+        perfumes.add(p6);
+        perfumes.add(p7);
+        perfumes.add(p8);
+        perfumes.add(p9);
+        perfumes.add(p10);
 
         mapOfOrigin.put(p1.get_id(), ws2);
         mapOfOrigin.put(p2.get_id(), ws2);
@@ -204,6 +172,61 @@ public class App
         twoFieldQueue.add(p10);
     }
 
+
+
+    public void displayList(List <Perfume> list)
+    {
+        for(Perfume p: list) {
+            System.out.println("------------------------------");
+            System.out.println("\tID : " + p.get_id());
+            System.out.println("\tBrand : " + p.getBrand());
+            System.out.println("\tName : " + p.getName());
+            System.out.println("\tBottle size (ml) : " + p.getSize());
+            System.out.println("\tPrice : €" + p.getPrice());
+            System.out.println("\tTarget Gender : " + p.getGender());
+            System.out.println("\tStock Available : " + p.getStockLvl());
+        }
+    }
+
+    public void displayStockAmountMap()
+    {
+        for (Map.Entry<Integer, Perfume> entry : StockAmountMap.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ".\t Value: " + entry.getValue());
+        }
+    }
+
+    public void displayTwoFieldQueue()
+    {
+        while ( !twoFieldQueue.isEmpty() ) {
+            System.out.println(twoFieldQueue.remove());
+        }
+    }
+
+    public void priorityQueueSequence()
+    {
+        // add two third-priority elements
+        queue.add(perfumes.get(0));
+        queue.add(perfumes.get(1));
+
+        // add two second-priority level items
+        queue.add(perfumes.get(7));
+        queue.add(perfumes.get(8));
+
+        // remove and display one element
+        System.out.println("Remove and display a single element");
+        Perfume p = queue.remove();
+        System.out.println(p.toString() + "  -  Price per ml: €" + (p.getPrice()/p.getSize()));
+
+        // add one top-priority element
+        queue.add(perfumes.get(4));
+
+        // remove and display all elements in priority order
+        System.out.println("\nRemove and display all elements");
+        while ( !queue.isEmpty() ) {
+            Perfume r = queue.remove();
+            System.out.println(r.toString() + "\t-\tPrice per ml: €" + (Double.valueOf(Math.round((r.getPrice()/r.getSize()) * 100)) / 100) );
+        }
+    }
 
 
 }

@@ -39,16 +39,18 @@ public class Perfume implements Comparable<Perfume>{
 
     // Compare based on price per 1ml of perfume
     // If 2 perfumes are the same price/size ratio, the larger sized bottle has priority
+
+    // no need for getter as in same class
+
     @Override
     public int compareTo(Perfume p)
     {
-        double currentP = (this.getPrice() / (double)this.getSize());
-        double paramP = (p.getPrice() / (double)p.getSize());
+        double currentP = (this.price/ (double)this.size);
+        double paramP = (p.price / (double)p.size);
 
-        boolean PriceSizeComp =
-                currentP == paramP;
+        boolean priceSizeComp = currentP == paramP;
 
-        if (PriceSizeComp)
+        if (priceSizeComp)
         {
             return 0;
         }

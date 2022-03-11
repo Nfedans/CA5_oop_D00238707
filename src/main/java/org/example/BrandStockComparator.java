@@ -15,8 +15,8 @@ public class BrandStockComparator implements Comparator<Perfume> {
 
         if(brandSame)
         {
-            //so, compare based on age
-            return p1.getStockLvl() - p2.getStockLvl();
+            //so, compare based on stocklevel
+            return (p1.getStockLvl() - p2.getStockLvl()) * -1;
         }
         else
         {
