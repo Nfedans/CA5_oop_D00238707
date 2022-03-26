@@ -1,20 +1,19 @@
-package org.example;
+package org.example.DTOs;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Perfume implements Comparable<Perfume>{
 
-    private String _id;
+    private int _id;
     private String brand;
     private String name;
     private int size;
-    private double price;
+    private float price;
     //private ArrayList<String> notes;
     private String gender;
     private int stockLvl;
 
-    public Perfume(String _id, String brand, String name, int size, double price, String gender, int stockLvl)
+    public Perfume(int _id, String brand, String name, int size, float price, String gender, int stockLvl)
     {
         this._id = _id;
         this.brand = brand;
@@ -25,7 +24,7 @@ public class Perfume implements Comparable<Perfume>{
         this.stockLvl = stockLvl;
     }
 
-    public Perfume(String _id, String brand, String name)
+    public Perfume(int _id, String brand, String name)
     {
         this._id = _id;
         this.brand = brand;
@@ -45,8 +44,8 @@ public class Perfume implements Comparable<Perfume>{
     @Override
     public int compareTo(Perfume p)
     {
-        double currentP = (this.price/ (double)this.size);
-        double paramP = (p.price / (double)p.size);
+        double currentP = (this.price/ (float)this.size);
+        double paramP = (p.price / (float)p.size);
 
         boolean priceSizeComp = currentP == paramP;
 
@@ -68,11 +67,11 @@ public class Perfume implements Comparable<Perfume>{
     }
 
 
-    public String get_id() {
+    public int get_id() {
         return _id;
     }
 
-    public void set_id(String _id) {
+    public void set_id(int _id) {
         this._id = _id;
     }
 
@@ -98,11 +97,11 @@ public class Perfume implements Comparable<Perfume>{
         this.size = size;
     }
 
-    public double getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
@@ -122,12 +121,13 @@ public class Perfume implements Comparable<Perfume>{
         this.stockLvl = stockLvl;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Perfume)) return false;
         Perfume perfume = (Perfume) o;
-        return get_id().equals(perfume.get_id()) && getBrand().equals(perfume.getBrand()) && getName().equals(perfume.getName());
+        return get_id() == perfume.get_id() && getBrand().equals(perfume.getBrand()) && getName().equals(perfume.getName());
     }
 
     @Override

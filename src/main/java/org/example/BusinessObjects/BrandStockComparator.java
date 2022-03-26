@@ -1,4 +1,6 @@
-package org.example;
+package org.example.BusinessObjects;
+
+import org.example.DTOs.Perfume;
 
 import java.util.Comparator;
 

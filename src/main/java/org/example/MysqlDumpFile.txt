@@ -1,0 +1,27 @@
+DROP DATABASE IF EXISTS `perfume_database`;
+CREATE DATABASE `perfume_database`;
+USE `perfume_database`;
+DROP TABLE IF EXISTS `perfume`;
+
+CREATE TABLE `perfume` (
+  `_id` int(11) NOT NULL AUTO_INCREMENT,
+  `brand` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `size` INT(4) NOT NULL,
+  `price` FLOAT(4,2) NOT NULL,
+  `gender` varchar(50) NOT NULL,
+  `stockLvl` int(5) NOT NULL,
+  PRIMARY KEY  (`_id`)
+  );
+
+INSERT INTO perfume VALUES
+(1, "Calvin Klein", "One", 50, 34.99, "Male", 131),
+(2,"Calvin Klein", "One", 100, 69.98, "Male", 32),
+(3,"Dior", "Sauvage", 50, 64.99, "Male", 288),
+(4,"Dior", "Sauvage", 100, 110, "Male", 209),
+(5,"Chanel", "Bleu de chanel", 50, 70, "Male", 138),
+(6,"Chanel", "Bleu de chanel", 100, 125, "Male", 53),
+(7,"Dior", "Homme", 50, 44.99, "Male", 51),
+(8,"Dior", "Homme Sport", 75, 60, "Male", 106),
+(9,"Armani", "Code", 100, 80, "Male", 89),
+(10,"Davidoff", "Cool Water", 200, 69.99, "Male", 10);

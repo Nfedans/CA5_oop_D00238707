@@ -1,10 +1,13 @@
-package org.example;
+package org.example.BusinessObjects;
+
+import org.example.DAOs.MySqlPerfumeDao;
+import org.example.DAOs.PerfumeDaoInterface;
+import org.example.DTOs.Perfume;
+import org.example.DTOs.WholeSaler;
+import org.example.Exceptions.DaoException;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.PriorityQueue;
-
-import static java.lang.Math.round;
 
 /**
  * Nikita Fedans project
@@ -13,11 +16,11 @@ import static java.lang.Math.round;
 public class App 
 {
     List<Perfume> perfumes;
-    Map<String, WholeSaler> mapOfOrigin;
+    Map<Integer, WholeSaler> mapOfOrigin;
     Map<Integer, Perfume> StockAmountMap;
     PriorityQueue<Perfume> queue;
     PriorityQueue<Perfume> twoFieldQueue;
-
+    PerfumeDaoInterface IPerfumeDao = new MySqlPerfumeDao();
 
     public static void main(String[] args)
     {
@@ -29,7 +32,7 @@ public class App
     {
         System.out.println("Projects part 1 - CA5");
         this.perfumes = new ArrayList<>();
-        this.mapOfOrigin = new HashMap<>();
+        this.mapOfOrigin = new HashMap<Integer, WholeSaler>();
         this.StockAmountMap = new TreeMap<>();
         this.queue = new PriorityQueue<>();
         this.twoFieldQueue = new PriorityQueue<>(new BrandStockComparator());
@@ -52,7 +55,8 @@ public class App
                 + "3. display the objects from the TreeMap\n"
                 + "4. PriorityQueue Sequence Simulation\n"
                 + "5. PriorityQueue Two-Field (Brand, stockLvl)\n"
-                + "6. Exit\n"
+                + "6. Find all perfume from database\n"
+                + "7. Exit\n"
                 + "Enter Option [1,6]";
 
         final int VIEW_PERFUME = 1;
@@ -60,7 +64,8 @@ public class App
         final int DISPLAY_OBJECTS_FROM_TREEMAP = 3;
         final int PRIORITYQUEUE_SEQUENCE_SIMULATION = 4;
         final int PRIORITYQUEUE_BRAND_STOCK = 5;
-        final int EXIT = 6;
+        final int PULL_ALL_PERFUME_FROM_DB = 6;
+        final int EXIT = 7;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -78,7 +83,8 @@ public class App
                         System.out.println(" ___ Find Wholesaler of a Perfume ___  ");
                         System.out.println("Enter Perfume ID: ");
                         String id = keyboard.nextLine();
-                        WholeSaler ws = mapOfOrigin.get(id);
+                        int _id = Integer.parseInt(id);
+                        WholeSaler ws = mapOfOrigin.get(_id);
                         System.out.println(ws);
                         break;
                     case DISPLAY_OBJECTS_FROM_TREEMAP:
@@ -92,6 +98,9 @@ public class App
                     case PRIORITYQUEUE_BRAND_STOCK:
                         System.out.println("Priority queue, sorting by brand name alphabetically & stockLevel, low to high");
                         displayTwoFieldQueue();
+                        break;
+                    case PULL_ALL_PERFUME_FROM_DB:
+                        findAllPerfume();
                         break;
                     case EXIT:
                         System.out.println("Menu Exited");
@@ -112,16 +121,16 @@ public class App
 
     private void initialize()
     {
-        Perfume p1 = new Perfume("p_000001", "Calvin Klein", "One", 50, 34.99, "Male", 131);  // .7
-        Perfume p2 = new Perfume("p_000002","Calvin Klein", "One", 100, 69.98, "Male", 32); // .7
-        Perfume p3 = new Perfume("p_000003","Dior", "Sauvage", 50, 64.99, "Male", 288); // 1.3
-        Perfume p4 = new Perfume("p_000004","Dior", "Sauvage", 100, 110, "Male", 209);  // 1.1
-        Perfume p5 = new Perfume("p_000005","Chanel", "Bleu de chanel", 50, 70, "Male", 138); // 1.4
-        Perfume p6 = new Perfume("p_000006","Chanel", "Bleu de chanel", 100, 125, "Male", 53); //1.25
-        Perfume p7 = new Perfume("p_000007","Dior", "Homme", 50, 44.99, "Male", 51); // 0.9
-        Perfume p8 = new Perfume("p_000008","Dior", "Homme Sport", 75, 60, "Male", 106); // 0.8
-        Perfume p9 = new Perfume("p_000009","Armani", "Code", 100, 80, "Male", 89); // 0.8
-        Perfume p10 = new Perfume("p_000010","Davidoff", "Cool Water", 200, 69.99, "Male", 10); // 0.35
+        Perfume p1 = new Perfume(1, "Calvin Klein", "One", 50, (float) 34.99, "Male", 131);  // .7
+        Perfume p2 = new Perfume(2,"Calvin Klein", "One", 100, (float) 69.98, "Male", 32); // .7
+        Perfume p3 = new Perfume(3,"Dior", "Sauvage", 50, (float) 64.99, "Male", 288); // 1.3
+        Perfume p4 = new Perfume(4,"Dior", "Sauvage", 100, (float) 110, "Male", 209);  // 1.1
+        Perfume p5 = new Perfume(5,"Chanel", "Bleu de chanel", 50, (float) 70, "Male", 138); // 1.4
+        Perfume p6 = new Perfume(6,"Chanel", "Bleu de chanel", 100, (float) 125, "Male", 53); //1.25
+        Perfume p7 = new Perfume(7,"Dior", "Homme", 50, (float) 44.99, "Male", 51); // 0.9
+        Perfume p8 = new Perfume(8,"Dior", "Homme Sport", 75, (float) 60, "Male", 106); // 0.8
+        Perfume p9 = new Perfume(9,"Armani", "Code", 100, (float) 80, "Male", 89); // 0.8
+        Perfume p10 = new Perfume(10,"Davidoff", "Cool Water", 200, (float) 69.99, "Male", 10); // 0.35
 
         WholeSaler ws1 = new WholeSaler("3928436", "1 alex street", "UK");
         WholeSaler ws2 = new WholeSaler("9562098", "16 Monsoir Avenue", "France");
@@ -137,6 +146,23 @@ public class App
         perfumes.add(p8);
         perfumes.add(p9);
         perfumes.add(p10);
+
+        System.out.println(p1.get_id());
+        System.out.println(p2.get_id());
+        System.out.println(p3.get_id());
+        System.out.println(p4.get_id());
+        System.out.println(p5.get_id());
+        System.out.println(p6.get_id());
+        System.out.println(p7.get_id());
+        System.out.println(p8.get_id());
+        System.out.println(p9.get_id());
+        System.out.println(p10.get_id());
+
+
+
+
+
+
 
         mapOfOrigin.put(p1.get_id(), ws2);
         mapOfOrigin.put(p2.get_id(), ws2);
@@ -225,6 +251,27 @@ public class App
         while ( !queue.isEmpty() ) {
             Perfume r = queue.remove();
             System.out.println(r.toString() + "\t-\tPrice per ml: €" + (Double.valueOf(Math.round((r.getPrice()/r.getSize()) * 100)) / 100) );
+        }
+    }
+
+    public void findAllPerfume()
+    {
+        try
+        {
+            System.out.println("\nCall findAllPerfumes()");
+            List<Perfume> perfumes = IPerfumeDao.findAllPerfume();
+
+            if( perfumes.isEmpty() )
+                System.out.println("There are no Users");
+            else {
+                for (Perfume perfume : perfumes)
+                    System.out.println(perfume.toString());
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
         }
     }
 
