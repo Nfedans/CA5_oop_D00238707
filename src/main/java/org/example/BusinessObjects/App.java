@@ -56,7 +56,8 @@ public class App
                 + "4. PriorityQueue Sequence Simulation\n"
                 + "5. PriorityQueue Two-Field (Brand, stockLvl)\n"
                 + "6. Find all perfume from database\n"
-                + "7. Exit\n"
+                + "7. Find one perfume from database by ID\n"
+                + "8. Exit\n"
                 + "Enter Option [1,6]";
 
         final int VIEW_PERFUME = 1;
@@ -65,7 +66,8 @@ public class App
         final int PRIORITYQUEUE_SEQUENCE_SIMULATION = 4;
         final int PRIORITYQUEUE_BRAND_STOCK = 5;
         final int PULL_ALL_PERFUME_FROM_DB = 6;
-        final int EXIT = 7;
+        final int PULL_PERFUME_FROM_DB_BY_ID = 7;
+        final int EXIT = 8;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -81,7 +83,7 @@ public class App
                             break;
                     case RETRIEVE_WHOLESALER_PERFUME:
                         System.out.println(" ___ Find Wholesaler of a Perfume ___  ");
-                        System.out.println("Enter Perfume ID: ");
+                        System.out.println("Please enter Perfume ID: ");
                         String id = keyboard.nextLine();
                         int _id = Integer.parseInt(id);
                         WholeSaler ws = mapOfOrigin.get(_id);
@@ -101,6 +103,11 @@ public class App
                         break;
                     case PULL_ALL_PERFUME_FROM_DB:
                         findAllPerfume();
+                        break;
+                    case PULL_PERFUME_FROM_DB_BY_ID:
+                        System.out.println("Please enter Perfume ID: ");
+                        String idTag = keyboard.nextLine();
+                        findPerfumeByID(idTag);
                         break;
                     case EXIT:
                         System.out.println("Menu Exited");
@@ -146,23 +153,6 @@ public class App
         perfumes.add(p8);
         perfumes.add(p9);
         perfumes.add(p10);
-
-        System.out.println(p1.get_id());
-        System.out.println(p2.get_id());
-        System.out.println(p3.get_id());
-        System.out.println(p4.get_id());
-        System.out.println(p5.get_id());
-        System.out.println(p6.get_id());
-        System.out.println(p7.get_id());
-        System.out.println(p8.get_id());
-        System.out.println(p9.get_id());
-        System.out.println(p10.get_id());
-
-
-
-
-
-
 
         mapOfOrigin.put(p1.get_id(), ws2);
         mapOfOrigin.put(p2.get_id(), ws2);
@@ -266,6 +256,26 @@ public class App
             else {
                 for (Perfume perfume : perfumes)
                     System.out.println(perfume.toString());
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void findPerfumeByID(String id)
+    {
+        try
+        {
+            System.out.println("findPerfumeByID()");
+            Perfume perfume = IPerfumeDao.findPerfumeByID(id);
+
+            if(perfume == null)
+                System.out.println("No perfume exists with ID: " + id);
+            else {
+                    System.out.println(perfume);
             }
 
         }
