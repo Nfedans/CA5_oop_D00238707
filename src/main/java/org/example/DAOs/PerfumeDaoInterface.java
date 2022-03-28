@@ -10,6 +10,8 @@ public interface PerfumeDaoInterface {
 
     public Perfume findPerfumeByID(String id) throws DaoException;
 
+    public void deletePerfumeByID(String id) throws DaoException;
+
 //    public User findUserByUsernamePassword(String username, String password) throws DaoException;
 //
 //    public List<User> findAllUsersLastNameContains(String subString ) throws DaoException;

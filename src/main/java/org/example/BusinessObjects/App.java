@@ -57,7 +57,8 @@ public class App
                 + "5. PriorityQueue Two-Field (Brand, stockLvl)\n"
                 + "6. Find all perfume from database\n"
                 + "7. Find one perfume from database by ID\n"
-                + "8. Exit\n"
+                + "8. Delete one perfume from database by ID\n"
+                + "9. Exit\n"
                 + "Enter Option [1,6]";
 
         final int VIEW_PERFUME = 1;
@@ -67,7 +68,8 @@ public class App
         final int PRIORITYQUEUE_BRAND_STOCK = 5;
         final int PULL_ALL_PERFUME_FROM_DB = 6;
         final int PULL_PERFUME_FROM_DB_BY_ID = 7;
-        final int EXIT = 8;
+        final int DELETE_PERFUME_FROM_DB_BY_ID = 8;
+        final int EXIT = 9;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -108,6 +110,11 @@ public class App
                         System.out.println("Please enter Perfume ID: ");
                         String idTag = keyboard.nextLine();
                         findPerfumeByID(idTag);
+                        break;
+                    case DELETE_PERFUME_FROM_DB_BY_ID:
+                        System.out.println("Please enter Perfume ID: ");
+                        String idForDeletion = keyboard.nextLine();
+                        deletePerfumeByID(idForDeletion);
                         break;
                     case EXIT:
                         System.out.println("Menu Exited");
@@ -276,6 +283,34 @@ public class App
                 System.out.println("No perfume exists with ID: " + id);
             else {
                     System.out.println(perfume);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePerfumeByID(String id)
+    {
+        try
+        {
+            System.out.println("deletePerfumeByID()");
+            Perfume perfume1 = IPerfumeDao.findPerfumeByID(id);
+            IPerfumeDao.deletePerfumeByID(id);
+            Perfume perfume2 = IPerfumeDao.findPerfumeByID(id);
+
+            if(perfume1 != null && perfume2 == null)
+            {
+                System.out.println("Perfume Deleted Successfully");
+            }
+            else if(perfume1 == null)
+            {
+                System.out.println("The Perfume with id = " + id + " wasn't in the database");
+            }
+            else {
+                System.out.println("Perfume deletion has failed");
             }
 
         }

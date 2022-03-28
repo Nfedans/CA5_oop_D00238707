@@ -125,4 +125,45 @@ public class MySqlPerfumeDao extends MySqlDao implements PerfumeDaoInterface {
         }
         return perfume;     // reference to User object, or null value
     }
+
+
+    @Override
+    public void deletePerfumeByID(String id) throws DaoException
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Perfume perfume = null;
+        try
+        {
+            connection = this.getConnection();
+
+            String query = "DELETE FROM perfume WHERE _id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, id);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e)
+        {
+            throw new DaoException("findPerfumeByID() " + e.getMessage());
+        } finally
+        {
+            try
+            {
+                if (preparedStatement != null)
+                {
+                    preparedStatement.close();
+                }
+                if (connection != null)
+                {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e)
+            {
+                throw new DaoException("findPerfumeByID() " + e.getMessage());
+            }
+        }
+
+    }
 }
