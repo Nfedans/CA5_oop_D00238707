@@ -58,8 +58,9 @@ public class App
                 + "6. Find all perfume from database\n"
                 + "7. Find one perfume from database by ID\n"
                 + "8. Delete one perfume from database by ID\n"
-                + "9. Exit\n"
-                + "Enter Option [1,6]";
+                + "9. Add perfume to database\n"
+                + "10. Exit\n"
+                + "Enter Option [1,10]";
 
         final int VIEW_PERFUME = 1;
         final int RETRIEVE_WHOLESALER_PERFUME = 2;
@@ -69,7 +70,8 @@ public class App
         final int PULL_ALL_PERFUME_FROM_DB = 6;
         final int PULL_PERFUME_FROM_DB_BY_ID = 7;
         final int DELETE_PERFUME_FROM_DB_BY_ID = 8;
-        final int EXIT = 9;
+        final int ADD_PERFUME_TO_DB = 9;
+        final int EXIT = 10;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -116,16 +118,19 @@ public class App
                         String idForDeletion = keyboard.nextLine();
                         deletePerfumeByID(idForDeletion);
                         break;
+                    case ADD_PERFUME_TO_DB:
+                        addPerfumeToDB();
+                        break;
                     case EXIT:
                         System.out.println("Menu Exited");
                         break;
                     default:
-                        System.out.print("Invalid option - please enter number in range [1,6]");
+                        System.out.print("Invalid option - please enter number in range [1,10]");
                         break;
                 }
 
             } catch (InputMismatchException | NumberFormatException e) {
-                System.out.print("Invalid option - please enter number in range [1,6]");
+                System.out.print("Invalid option - please enter number in range [1,10]");
             }
         } while (option != EXIT);
 
@@ -318,6 +323,58 @@ public class App
         {
             e.printStackTrace();
         }
+    }
+
+    public void addPerfumeToDB()
+    {
+        String brand = "";
+        String name = "";
+        int enteredSize = 0;
+        float enteredPrice = -1;
+        String gender  = "";
+        int enteredStockLvl = -1;
+        Scanner kb = new Scanner(System.in);
+
+
+        while(brand == "") {
+            System.out.println("Please enter Perfume Brand: ");
+            brand = kb.nextLine();
+        };
+
+      while(name == "") {
+            System.out.println("Please enter Perfume Name: ");
+            name = kb.nextLine();
+        };
+
+    while(enteredSize < 1) {
+            System.out.println("Please enter Perfume Size (ml): ");
+            enteredSize = kb.nextInt();
+        };
+
+     while(enteredPrice <= 0) {
+            System.out.println("Please enter Perfume price: ");
+            enteredPrice = kb.nextFloat();
+        };
+
+        while(gender == "") {
+            System.out.println("Please enter Perfume gender: ");
+            gender = kb.next();
+        };
+
+       while(enteredStockLvl <= 0) {
+            System.out.println("Please enter Perfume Stock Level: ");
+            enteredStockLvl = kb.nextInt();
+        };
+
+        try {
+            IPerfumeDao.addPerfume(brand, name, enteredSize, enteredPrice, gender, enteredStockLvl);
+            System.out.println("Added Successfully");
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+
     }
 
 

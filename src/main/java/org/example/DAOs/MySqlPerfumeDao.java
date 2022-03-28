@@ -146,7 +146,7 @@ public class MySqlPerfumeDao extends MySqlDao implements PerfumeDaoInterface {
 
         } catch (SQLException e)
         {
-            throw new DaoException("findPerfumeByID() " + e.getMessage());
+            throw new DaoException("deletePerfumeByID() " + e.getMessage());
         } finally
         {
             try
@@ -161,9 +161,55 @@ public class MySqlPerfumeDao extends MySqlDao implements PerfumeDaoInterface {
                 }
             } catch (SQLException e)
             {
-                throw new DaoException("findPerfumeByID() " + e.getMessage());
+                throw new DaoException("deletePerfumeByID() " + e.getMessage());
             }
         }
 
     }
+
+    @Override
+    public void addPerfume(String brand, String name, int size, float price, String gender, int stockLvl) throws DaoException
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try
+        {
+            connection = this.getConnection();
+
+            String query = "INSERT INTO perfume VALUES (null, ?,?,?,?,?,?)";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, brand);
+            preparedStatement.setString(2, name);
+            preparedStatement.setInt(3, size);
+            preparedStatement.setFloat(4, price);
+            preparedStatement.setString(5, gender);
+            preparedStatement.setInt(6, stockLvl);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e)
+        {
+            throw new DaoException("addPerfume() " + e.getMessage());
+        } finally
+        {
+            try
+            {
+                if (preparedStatement != null)
+                {
+                    preparedStatement.close();
+                }
+                if (connection != null)
+                {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e)
+            {
+                throw new DaoException("addPerfume() " + e.getMessage());
+            }
+        }
+
+    }
+
 }
