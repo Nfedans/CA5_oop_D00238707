@@ -63,8 +63,10 @@ public class App
                 + "8. Delete one perfume from database by ID\n"
                 + "9. Add perfume to database\n"
                 + "10. List perfumes filtered by price\n"
-                + "11. Exit\n"
-                + "Enter Option [1,11]";
+                + "11. Find all perfume from database as JSON\n"
+                + "12. Find one perfume from database by ID as JSON\n"
+                + "13. Exit\n"
+                + "Enter Option [1,13]";
 
         final int VIEW_PERFUME = 1;
         final int RETRIEVE_WHOLESALER_PERFUME = 2;
@@ -76,7 +78,9 @@ public class App
         final int DELETE_PERFUME_FROM_DB_BY_ID = 8;
         final int ADD_PERFUME_TO_DB = 9;
         final int LIST_FILTERED = 10;
-        final int EXIT = 11;
+        final int PULL_ALL_PERFUME_FROM_DB_JSON = 11;
+        final int PULL_PERFUME_FROM_DB_BY_ID_JSON = 12;
+        final int EXIT = 13;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -132,16 +136,24 @@ public class App
                         keyboard.nextLine();
                         listFilteredPerfumes(filteringPrice);
                         break;
+                    case PULL_ALL_PERFUME_FROM_DB_JSON:
+                        findAllPerfumeJSON();
+                        break;
+                    case PULL_PERFUME_FROM_DB_BY_ID_JSON:
+                        System.out.println("Please enter Perfume ID: ");
+                        String idTag2 = keyboard.nextLine();
+                        findPerfumeByIDJSON(idTag2);
+                        break;
                     case EXIT:
                         System.out.println("Menu Exited");
                         break;
                     default:
-                        System.out.print("Invalid option - please enter number in range [1,11]");
+                        System.out.print("Invalid option - please enter number in range [1,13]");
                         break;
                 }
 
             } catch (InputMismatchException | NumberFormatException e) {
-                System.out.print("Invalid option - please enter number in range [1,11]");
+                System.out.print("Invalid option - please enter number in range [1,13]");
             }
         } while (option != EXIT);
 
@@ -288,6 +300,26 @@ public class App
         }
     }
 
+    public void findAllPerfumeJSON()
+    {
+        try
+        {
+            System.out.println("\nCall findAllPerfumesJSON()");
+            String jsonString = IPerfumeDao.findAllPerfumeJSON();
+
+            if(jsonString.equals("null"))
+                System.out.println("No Perfume found");
+            else {
+                System.out.println(jsonString);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void findPerfumeByID(String id)
     {
         try
@@ -299,6 +331,26 @@ public class App
                 System.out.println("No perfume exists with ID: " + id);
             else {
                     System.out.println(perfume);
+            }
+
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void findPerfumeByIDJSON(String id)
+    {
+        try
+        {
+            System.out.println("findPerfumeByIDJSON()");
+            String jsonString = IPerfumeDao.findPerfumeByIDJSON(id);
+
+            if(jsonString.equals("null"))
+                System.out.println("No Perfume found");
+            else {
+                System.out.println(jsonString);
             }
 
         }
