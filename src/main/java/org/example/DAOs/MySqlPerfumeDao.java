@@ -71,6 +71,66 @@ public class MySqlPerfumeDao extends MySqlDao implements PerfumeDaoInterface {
 
 
     @Override
+    public List<Perfume> findAllPerfumeSubXEuro(float x) throws DaoException
+    {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet resultSet = null;
+        List<Perfume> perfumeList = new ArrayList<>();
+
+        try
+        {
+            //Get connection object using the methods in the super class (MySqlDao.java)...
+            connection = this.getConnection();
+
+            String query = "SELECT * FROM perfume where price < ?";
+            ps = connection.prepareStatement(query);
+            ps.setFloat(1, x);
+
+            //Using a PreparedStatement to execute SQL...
+            resultSet = ps.executeQuery();
+            while (resultSet.next())
+            {
+                int _id = resultSet.getInt("_id");
+                String brand = resultSet.getString("brand");
+                String name = resultSet.getString("name");
+                int size = resultSet.getInt("size");
+                float price = resultSet.getFloat("price");
+                String gender = resultSet.getString("gender");
+                int stockLvl = resultSet.getInt("stockLvl");
+                Perfume p = new Perfume(_id, brand, name, size, price, gender, stockLvl);
+                perfumeList.add(p);
+            }
+        } catch (SQLException e)
+        {
+            throw new DaoException("findAllPerfumeSubXEuro() " + e.getMessage());
+        } finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (connection != null)
+                {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e)
+            {
+                throw new DaoException("findAllPerfumeSubXEuro() " + e.getMessage());
+            }
+        }
+        return perfumeList;     // may be empty
+
+    }
+
+
+    @Override
     public Perfume findPerfumeByID(String id) throws DaoException
     {
         Connection connection = null;

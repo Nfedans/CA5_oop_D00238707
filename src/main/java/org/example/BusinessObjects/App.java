@@ -19,6 +19,8 @@ public class App
     Map<Integer, WholeSaler> mapOfOrigin;
     Map<Integer, Perfume> StockAmountMap;
     PriorityQueue<Perfume> queue;
+    PriorityQueue<Perfume> queueDBFiltered;
+    List<Perfume> listDBFiltered;
     PriorityQueue<Perfume> twoFieldQueue;
     PerfumeDaoInterface IPerfumeDao = new MySqlPerfumeDao();
 
@@ -35,6 +37,7 @@ public class App
         this.mapOfOrigin = new HashMap<Integer, WholeSaler>();
         this.StockAmountMap = new TreeMap<>();
         this.queue = new PriorityQueue<>();
+        this.queueDBFiltered = new PriorityQueue<>();
         this.twoFieldQueue = new PriorityQueue<>(new BrandStockComparator());
         initialize();
 
@@ -59,8 +62,9 @@ public class App
                 + "7. Find one perfume from database by ID\n"
                 + "8. Delete one perfume from database by ID\n"
                 + "9. Add perfume to database\n"
-                + "10. Exit\n"
-                + "Enter Option [1,10]";
+                + "10. List perfumes filtered by price\n"
+                + "11. Exit\n"
+                + "Enter Option [1,11]";
 
         final int VIEW_PERFUME = 1;
         final int RETRIEVE_WHOLESALER_PERFUME = 2;
@@ -71,7 +75,8 @@ public class App
         final int PULL_PERFUME_FROM_DB_BY_ID = 7;
         final int DELETE_PERFUME_FROM_DB_BY_ID = 8;
         final int ADD_PERFUME_TO_DB = 9;
-        final int EXIT = 10;
+        final int LIST_FILTERED = 10;
+        final int EXIT = 11;
 
         Scanner keyboard = new Scanner(System.in);
         int option = 0;
@@ -121,16 +126,22 @@ public class App
                     case ADD_PERFUME_TO_DB:
                         addPerfumeToDB();
                         break;
+                    case LIST_FILTERED:
+                        System.out.println("Please enter maximum perfume price: ");
+                        float filteringPrice = keyboard.nextFloat();
+                        keyboard.nextLine();
+                        listFilteredPerfumes(filteringPrice);
+                        break;
                     case EXIT:
                         System.out.println("Menu Exited");
                         break;
                     default:
-                        System.out.print("Invalid option - please enter number in range [1,10]");
+                        System.out.print("Invalid option - please enter number in range [1,11]");
                         break;
                 }
 
             } catch (InputMismatchException | NumberFormatException e) {
-                System.out.print("Invalid option - please enter number in range [1,10]");
+                System.out.print("Invalid option - please enter number in range [1,11]");
             }
         } while (option != EXIT);
 
@@ -375,6 +386,30 @@ public class App
             e.printStackTrace();
         }
 
+    }
+
+    public void listFilteredPerfumes(float x)
+    {
+        System.out.println("Showing all perfumes sub " + x + " Euro, ordered by (price/ml), hi->lo");
+
+        try {
+            listDBFiltered = IPerfumeDao.findAllPerfumeSubXEuro(x);
+            ArrayList<Perfume> fetchedFilteredArrList = new ArrayList<Perfume>();
+            fetchedFilteredArrList.addAll(listDBFiltered);
+
+            for(int i = 0; i < fetchedFilteredArrList.size(); i++)
+            {
+                queueDBFiltered.add(fetchedFilteredArrList.get(i));
+            }
+            while ( !queueDBFiltered.isEmpty() ) {
+                Perfume r = queueDBFiltered.remove();
+                System.out.println(r.toString() + "\t-\tPrice per ml: €" + (Double.valueOf(Math.round((r.getPrice()/r.getSize()) * 100)) / 100) );
+            }
+        }
+        catch( DaoException e )
+        {
+            e.printStackTrace();
+        }
     }
 
 
