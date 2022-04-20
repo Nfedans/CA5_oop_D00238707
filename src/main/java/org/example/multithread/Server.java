@@ -114,14 +114,25 @@ public class Server
                 {
                     System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + message);
 
-                    if (message.equals("DisplayAll"))
+                    if (message.equals("DisplayAllPerfume"))
                     {
                         socketWriter.println(findAllPerfumeJSON());  // sends current time to client
                     }
-                    else if (message.startsWith("Echo"))
+                    else if (message.startsWith("DisplayPerfumeById"))
                     {
-                        message = message.substring(5); // strip off the 'Echo ' part
-                        socketWriter.println(message);  // send message to client
+                        String[] tokens = message.split(" ");
+                        String param1 = tokens[0];
+                        String param2 = tokens[1];
+                        System.out.println("param1 == " + param1 + "\tparam2 == " + param2);
+
+
+                        String res = findPerfumeByIDJSON(param2);
+                        System.out.println("res == " + res);
+
+                        socketWriter.println(findPerfumeByIDJSON(param2));
+
+//                        message = message.substring(5); // strip off the 'Echo ' part
+//                        socketWriter.println(message);  // send message to client
                     }
                     else if (message.startsWith("Triple"))
                     {
@@ -344,7 +355,7 @@ public class Server
         }
     }
 
-    public void findPerfumeByIDJSON(String id)
+    public String findPerfumeByIDJSON(String id)
     {
         try
         {
@@ -352,9 +363,9 @@ public class Server
             String jsonString = IPerfumeDao.findPerfumeByIDJSON(id);
 
             if(jsonString.equals("null"))
-                System.out.println("No Perfume found");
+                return "No Perfume found";
             else {
-                System.out.println(jsonString);
+                return jsonString;
             }
 
         }
@@ -362,6 +373,7 @@ public class Server
         {
             e.printStackTrace();
         }
+        return "No Perfume found";
     }
 
     public void deletePerfumeByID(String id)

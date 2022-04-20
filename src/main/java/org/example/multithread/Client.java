@@ -36,20 +36,22 @@ public class Client
             this.perfumes = new ArrayList<>();
 
             final String MENU_ITEMS = "\nMAIN MENU COMMANDS\n"
-                    + "1. DisplayAll\t\tView All Perfume\n"
-                    + "2. Retrieve WholeSaler by Perfume\n"
-                    + "3. display the objects from the TreeMap\n"
-                    + "4. PriorityQueue Sequence Simulation\n"
-                    + "5. PriorityQueue Two-Field (Brand, stockLvl)\n"
-                    + "6. Find all perfume from database\n"
-                    + "7. Find one perfume from database by ID\n"
-                    + "8. Delete one perfume from database by ID\n"
-                    + "9. Add perfume to database\n"
-                    + "10. List perfumes filtered by price\n"
-                    + "11. Find all perfume from database as JSON\n"
-                    + "12. Find one perfume from database by ID as JSON\n"
-                    + "13. Exit\n"
-                    + "Enter Option [1,13]";
+                    + "1. DisplayAllPerfume\t\tView All Perfume\n"
+                    + "2. DisplayPerfumeById\t\texample: DisplayPerfumeById 13\n"
+//
+//                    + "2. Retrieve WholeSaler by Perfume\n"
+//                    + "3. display the objects from the TreeMap\n"
+//                    + "4. PriorityQueue Sequence Simulation\n"
+//                    + "5. PriorityQueue Two-Field (Brand, stockLvl)\n"
+//                    + "6. Find all perfume from database\n"
+//                    + "7. Find one perfume from database by ID\n"
+//                    + "8. Delete one perfume from database by ID\n"
+//                    + "9. Add perfume to database\n"
+//                    + "10. List perfumes filtered by price\n"
+//                    + "11. Find all perfume from database as JSON\n"
+//                    + "12. Find one perfume from database by ID as JSON\n"
+                    + "3. Exit\n"
+                    + "Enter Option [1,3]";
             System.out.println("\n" + MENU_ITEMS);
             String command = in.nextLine();
 
@@ -60,10 +62,10 @@ public class Client
 
             Scanner socketReader = new Scanner(socket.getInputStream());  // wait for, and retrieve the reply
 
-            boolean continueLoop=true;
-            while(continueLoop==true) {
+//            boolean continueLoop=true;
+            while(!command.equals("Exit")) {
 
-                if (command.equals("DisplayAll"))  //we expect the server to return a time
+                if (command.equals("DisplayAllPerfume"))  //we expect the server to return a time
                 {
                     String res = socketReader.nextLine();
 
@@ -72,10 +74,20 @@ public class Client
 
                     displayList(gottenList);
                 }
-                else if(command.startsWith("Echo"))
+                else if(command.startsWith("DisplayPerfumeById"))
                 {
-                    String input = socketReader.nextLine();
-                    System.out.println("Client message: Response from server: " + input);
+                    String res = socketReader.nextLine();
+                    if(res.equals("No Perfume found"))
+                    {
+                        System.out.println(res);
+                    }
+                    else
+                    {
+                        Gson gsonParser = new Gson();
+                        Perfume result = gsonParser.fromJson(res, Perfume.class);
+                        display(result);
+                    }
+//                    System.out.println("Client message: Response from server: " + input);
                 }
                 else if(command.startsWith("Triple"))
                 {
@@ -121,6 +133,19 @@ public class Client
             System.out.println("\tTarget Gender : " + p.getGender());
             System.out.println("\tStock Available : " + p.getStockLvl());
         }
+    }
+
+    public void display(Perfume p)
+    {
+            System.out.println("------------------------------");
+            System.out.println("\tID : " + p.get_id());
+            System.out.println("\tBrand : " + p.getBrand());
+            System.out.println("\tName : " + p.getName());
+            System.out.println("\tBottle size (ml) : " + p.getSize());
+            System.out.println("\tPrice : €" + p.getPrice());
+            System.out.println("\tTarget Gender : " + p.getGender());
+            System.out.println("\tStock Available : " + p.getStockLvl());
+            System.out.println("------------------------------");
     }
 
 }
