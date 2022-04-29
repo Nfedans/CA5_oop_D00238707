@@ -120,6 +120,7 @@ public class Server
                     }
                     else if (message.startsWith("DisplayPerfumeById"))
                     {
+
                         String[] tokens = message.split(" ");
                         String param1 = tokens[0];
                         String param2 = tokens[1];
@@ -131,26 +132,73 @@ public class Server
 
                         socketWriter.println(findPerfumeByIDJSON(param2));
 
-//                        message = message.substring(5); // strip off the 'Echo ' part
-//                        socketWriter.println(message);  // send message to client
+                        message = message.substring(5); // strip off the 'Echo ' part
+                        socketWriter.println(message);  // send message to client
                     }
-                    else if (message.startsWith("Triple"))
+                    else if (message.startsWith("AddPerfumeToDb"))
                     {
-                        message = message.substring(7);
-                        int res = Integer.parseInt(message);
-                        res = res * 3;
-                        socketWriter.println(res);  // send message to client
-                    }
-                    else if (message.startsWith("Add"))
-                    {
-                        String[] tokens = message.split(" ");
-                        String param1 = tokens[1];
-                        String param2 = tokens[2];
-                        int p1 = Integer.parseInt(param1);
-                        int p2 = Integer.parseInt(param2);
-                        int ans = p1 + p2;
-                        socketWriter.println(ans);
 
+                        System.out.println("Arriving from server: " + message);
+
+                        String msg = socketReader.readLine();
+
+                        Gson gsonParser = new Gson();
+                        Perfume perfume1 = gsonParser.fromJson(msg, Perfume.class);
+
+                        //System.out.println(socketReader.readLine());
+
+
+//                        System.out.println("Start of assigning");
+                        //
+//                        String[] tokens = msg.split(" ");
+//                        String cmd = tokens[0];
+//                        String brand = tokens[1];
+//                        String name = tokens[2];
+//                        int size = Integer.parseInt(tokens[3]);
+//                        float price = Float.parseFloat(tokens[4]);
+//                        String gender = tokens[5];
+//                        int stock = Integer.parseInt(tokens[6]);
+                        System.out.println("ALL VARIABLES ASSIGNED");
+                        // System.out.println("param1 == " + param1 + "\tparam2 == " + param2);
+
+                        try {
+                            IPerfumeDao.addPerfume(perfume1.getBrand(), perfume1.getName(), perfume1.getSize(), perfume1.getPrice(), perfume1.getGender(), perfume1.getStockLvl());
+
+                            String g = perfume1.getName() + " " + perfume1.getBrand() + " " + perfume1.getSize();
+
+                            String result = IPerfumeDao.findPerfumeByNameBrandSizeJSON(g);
+                            socketWriter.println(result);
+                        }
+                        catch( DaoException e )
+                        {
+                            e.printStackTrace();
+                            socketWriter.println(" Add Unsuccessful :( Please try again");
+                        }
+                    }
+//                    else if (message.startsWith("Add"))
+//                    {
+//                        String[] tokens = message.split(" ");
+//                        String param1 = tokens[1];
+//                        String param2 = tokens[2];
+//                        int p1 = Integer.parseInt(param1);
+//                        int p2 = Integer.parseInt(param2);
+//                        int ans = p1 + p2;
+//                        socketWriter.println(ans);
+//
+//                    }
+                    else if (message.startsWith("DelPerfumeByID"))
+                    {
+
+                        System.out.println("WE AT THIS POINT");
+                        String[] tokens = message.split(" ");
+                        String param1 = tokens[0];
+                        String param2 = tokens[1];
+                        System.out.println("param1 == " + param1 + "\tparam2 == " + param2);
+
+
+                        String postActionMsg = deletePerfumeByID(param2);
+
+                        socketWriter.println(postActionMsg);
                     }
                     else
                     {
@@ -355,6 +403,26 @@ public class Server
         }
     }
 
+//    public void findPerfumeByNameBrandSize(String toBeSplit)
+//    {
+//        try
+//        {
+//            System.out.println("findPerfumeByNameBrandSize()");
+//            Perfume perfume = IPerfumeDao.findPerfumeByID(id);
+//
+//            if(perfume == null)
+//                System.out.println("No perfume exists with ID: " + id);
+//            else {
+//                System.out.println(perfume);
+//            }
+//
+//        }
+//        catch( DaoException e )
+//        {
+//            e.printStackTrace();
+//        }
+//    }
+
     public String findPerfumeByIDJSON(String id)
     {
         try
@@ -376,7 +444,7 @@ public class Server
         return "No Perfume found";
     }
 
-    public void deletePerfumeByID(String id)
+    public String deletePerfumeByID(String id)
     {
         try
         {
@@ -384,24 +452,31 @@ public class Server
             Perfume perfume1 = IPerfumeDao.findPerfumeByID(id);
             IPerfumeDao.deletePerfumeByID(id);
             Perfume perfume2 = IPerfumeDao.findPerfumeByID(id);
+            String returnVal= "";
 
             if(perfume1 != null && perfume2 == null)
             {
-                System.out.println("Perfume Deleted Successfully");
+                returnVal = "Perfume Deleted Successfully";
+                System.out.println(returnVal);
             }
             else if(perfume1 == null)
             {
-                System.out.println("The Perfume with id = " + id + " wasn't in the database");
+                returnVal = "The Perfume with id = " + id + " wasn't in the database";
+                System.out.println(returnVal);
             }
             else {
-                System.out.println("Perfume deletion has failed");
+                returnVal = "Perfume deletion has failed";
+                System.out.println(returnVal);
             }
+            return returnVal;
 
         }
         catch( DaoException e )
         {
             e.printStackTrace();
+            return "NA";
         }
+
     }
 
     public void addPerfumeToDB()
@@ -432,7 +507,19 @@ public class Server
 
         while(enteredPrice <= 0) {
             System.out.println("Please enter Perfume price: ");
-            enteredPrice = kb.nextFloat();
+            String temp = kb.next();
+//            if() {
+//                enteredPrice = kb.nextFloat();
+//            }
+            try
+            {
+                Float.parseFloat(temp);
+
+            }
+            catch (Exception e)
+            {
+
+            }
         };
 
         while(gender == "") {
@@ -447,7 +534,7 @@ public class Server
 
         try {
             IPerfumeDao.addPerfume(brand, name, enteredSize, enteredPrice, gender, enteredStockLvl);
-            System.out.println("Added Successfully");
+
         }
         catch( DaoException e )
         {

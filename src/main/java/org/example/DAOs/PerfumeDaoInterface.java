@@ -20,6 +20,8 @@ public interface PerfumeDaoInterface {
 
     public String findPerfumeByIDJSON(String id) throws DaoException;
 
+    public String findPerfumeByNameBrandSizeJSON(String recString) throws DaoException;
+
 
 //    public User findUserByUsernamePassword(String username, String password) throws DaoException;
 //

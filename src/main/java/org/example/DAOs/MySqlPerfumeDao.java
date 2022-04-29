@@ -310,6 +310,72 @@ public class MySqlPerfumeDao extends MySqlDao implements PerfumeDaoInterface {
         return Result;     // may be empty
     }
 
+    @Override
+    public String findPerfumeByNameBrandSizeJSON(String recString) throws DaoException
+    {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Perfume perfume = null;
+        Gson gsonParser = new Gson();
+
+        String[] tokens = recString.split(" ");
+        String param1 = tokens[0];
+        String param2 = tokens[1];
+        String param3Temp = tokens[2];
+        int param3 = Integer.parseInt(param3Temp);
+        try
+        {
+            connection = this.getConnection();
+
+            String query = "SELECT * FROM perfume WHERE name = ? AND brand = ? AND size = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, param1);
+            preparedStatement.setString(2, param2);
+            preparedStatement.setString(3, param3Temp);
+
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next())
+            {
+                int _id = resultSet.getInt("_id");
+                String brand = resultSet.getString("brand");
+                String name = resultSet.getString("name");
+                int size = resultSet.getInt("size");
+                float price = resultSet.getFloat("price");
+                String gender = resultSet.getString("gender");
+                int stockLvl = resultSet.getInt("stockLvl");
+
+                perfume = new Perfume(_id, brand, name, size, price, gender, stockLvl);
+            }
+        } catch (SQLException e)
+        {
+            throw new DaoException("findPerfumeByID() " + e.getMessage());
+        } finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+                if (preparedStatement != null)
+                {
+                    preparedStatement.close();
+                }
+                if (connection != null)
+                {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e)
+            {
+                throw new DaoException("findPerfumeByID() " + e.getMessage());
+            }
+        }
+        String Result = gsonParser.toJson(perfume);    // Serialize an object
+
+        return Result;     // may be empty
+    }
+
 
     @Override
     public void deletePerfumeByID(String id) throws DaoException

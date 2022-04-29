@@ -35,6 +35,17 @@ public class Perfume implements Comparable<Perfume>{
         this.stockLvl = -1;
     }
 
+    public Perfume()
+    {
+        this._id = -1;
+        this.brand = "";
+        this.name = "";
+        this.size = -1;
+        this.price = -1;
+        this.gender = "";
+        this.stockLvl = -1;
+    }
+
 
     // Compare based on price per 1ml of perfume
     // If 2 perfumes are the same price/size ratio, the larger sized bottle has priority

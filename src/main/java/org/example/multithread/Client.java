@@ -16,6 +16,7 @@ import java.util.Scanner;
 public class Client
 {
     List<Perfume> perfumes;
+    Gson gsonParser = new Gson();
 
     public static void main(String[] args)
     {
@@ -38,7 +39,8 @@ public class Client
             final String MENU_ITEMS = "\nMAIN MENU COMMANDS\n"
                     + "1. DisplayAllPerfume\t\tView All Perfume\n"
                     + "2. DisplayPerfumeById\t\texample: DisplayPerfumeById 13\n"
-//
+                    + "3. AddPerfumeToDb\t\t\n"
+                    + "4. DelPerfumeByID\t\texample: DelPerfumeByID 23\n"
 //                    + "2. Retrieve WholeSaler by Perfume\n"
 //                    + "3. display the objects from the TreeMap\n"
 //                    + "4. PriorityQueue Sequence Simulation\n"
@@ -50,8 +52,8 @@ public class Client
 //                    + "10. List perfumes filtered by price\n"
 //                    + "11. Find all perfume from database as JSON\n"
 //                    + "12. Find one perfume from database by ID as JSON\n"
-                    + "3. Exit\n"
-                    + "Enter Option [1,3]";
+                    + "5. Exit\n"
+                    + "Enter Option [1,5]";
             System.out.println("\n" + MENU_ITEMS);
             String command = in.nextLine();
 
@@ -60,7 +62,8 @@ public class Client
 
             socketWriter.println(command);
 
-            Scanner socketReader = new Scanner(socket.getInputStream());  // wait for, and retrieve the reply
+            Scanner socketReader = new Scanner(socket.getInputStream());
+            //Scanner socketReader1 = new Scanner(socket.);// wait for, and retrieve the reply
 
 //            boolean continueLoop=true;
             while(!command.equals("Exit")) {
@@ -83,28 +86,47 @@ public class Client
                     }
                     else
                     {
-                        Gson gsonParser = new Gson();
+
                         Perfume result = gsonParser.fromJson(res, Perfume.class);
                         display(result);
                     }
+                }
+                else if(command.equals("AddPerfumeToDb"))
+                {
+                    String details = enterPerfumeJSON();
+                    socketWriter.println(details);
+                    String res = socketReader.nextLine();
+
+                    Perfume result = gsonParser.fromJson(res, Perfume.class);
+                    System.out.println("Coming from server: Successfully added");
+                    display(result);
+                }
+//                else if(command.startsWith("Add"))
+//                {
+//                    String input = socketReader.nextLine();
 //                    System.out.println("Client message: Response from server: " + input);
-                }
-                else if(command.startsWith("Triple"))
+//                }
+//                else// the user has entered the Echo command or an invalid command
+//                {
+//                    String input = socketReader.nextLine();
+//                    System.out.println("Client message: Response from server: \"" + input + "\"");
+//                }
+                else if(command.startsWith("DelPerfumeByID"))
                 {
-                    String input = socketReader.nextLine();
-                    System.out.println("Client message: Response from server: " + input);
-                }
-                else if(command.startsWith("Add"))
-                {
-                    String input = socketReader.nextLine();
-                    System.out.println("Client message: Response from server: " + input);
-                }
-                else// the user has entered the Echo command or an invalid command
-                {
-                    String input = socketReader.nextLine();
-                    System.out.println("Client message: Response from server: \"" + input + "\"");
+                    String res = socketReader.nextLine();
+
+                    if(res == "NA")
+                    {
+                        System.out.println("Sorry something went wrong on our end :(");
+                    }
+                    else
+                    {
+                        System.out.println(res);
+                    }
+
                 }
 
+                System.out.println("\n" + MENU_ITEMS);
                 System.out.println("Please enter new command");
                 command = in.nextLine();
                 socketWriter.println(command);
@@ -146,6 +168,156 @@ public class Client
             System.out.println("\tTarget Gender : " + p.getGender());
             System.out.println("\tStock Available : " + p.getStockLvl());
             System.out.println("------------------------------");
+    }
+
+    public String enterPerfume()
+    {
+        String brand = "";
+        String name = "";
+        int enteredSize = 0;
+        float enteredPrice = -1;
+        String gender  = "";
+        int enteredStockLvl = -1;
+        Scanner kb = new Scanner(System.in);
+        String exportString = "AddPerfumeToDb";
+
+
+        while(brand == "") {
+            System.out.println("Please enter Perfume Brand: ");
+            brand = kb.nextLine();
+        };
+        exportString = exportString + " " + brand;
+
+        while(name == "") {
+            System.out.println("Please enter Perfume Name: ");
+            name = kb.nextLine();
+        };
+        exportString = exportString + " " + name;
+
+        while(enteredSize < 1) {
+            System.out.println("Please enter Perfume Size (ml): ");
+            enteredSize = kb.nextInt();
+        };
+        exportString = exportString + " " + enteredSize;
+
+        while(enteredPrice <= 0) {
+            System.out.println("Please enter Perfume price: ");
+            enteredPrice = kb.nextFloat();
+        };
+        exportString = exportString + " " + enteredPrice;
+
+        while(gender == "") {
+            System.out.println("Please enter Perfume gender: ");
+            gender = kb.next();
+        };
+        exportString = exportString + " " + gender;
+
+        while(enteredStockLvl <= 0) {
+            System.out.println("Please enter Perfume Stock Level: ");
+            enteredStockLvl = kb.nextInt();
+        };
+        exportString = exportString + " " + enteredStockLvl;
+
+        return exportString;
+    }
+
+    public String enterPerfumeJSON()
+    {
+
+        Perfume perfume1 = new Perfume();
+
+        String brand = "";
+        String name = "";
+        int enteredSize = 0;
+        float enteredPrice = -1;
+        String gender  = "";
+        int enteredStockLvl = -1;
+        Scanner kb = new Scanner(System.in);
+        String exportString = "AddPerfumeToDb";
+
+
+        while(brand == "") {
+            System.out.println("Please enter Perfume Brand: ");
+            brand = kb.nextLine();
+        };
+        perfume1.setBrand(brand);
+
+        while(name == "") {
+            System.out.println("Please enter Perfume Name: ");
+            name = kb.nextLine();
+        };
+        perfume1.setName(name);
+
+//        while(enteredSize < 1) {
+//            System.out.println("Please enter Perfume Size (ml): ");
+//            enteredSize = kb.nextInt();
+//        };
+
+        while(enteredSize <= 0) {
+            System.out.println("Please enter Perfume Size (ml): ");
+            String temp = kb.next();
+            try
+            {
+                enteredSize = Integer.parseInt(temp);
+            }
+            catch (Exception e)
+            {
+                System.out.println("Please Try Again");
+            }
+        };
+
+        perfume1.setSize(enteredSize);
+
+//        while(enteredPrice <= 0) {
+//            System.out.println("Please enter Perfume price: ");
+//            enteredPrice = kb.nextFloat();
+//        };
+
+        while(enteredPrice <= 0) {
+            System.out.println("Please enter Perfume price: ");
+            String temp = kb.next();
+            try
+            {
+                enteredPrice = Float.parseFloat(temp);
+            }
+            catch (Exception e)
+            {
+                System.out.println("Please Try Again");
+            }
+        };
+
+        perfume1.setPrice(enteredPrice);
+
+        while(gender == "") {
+            System.out.println("Please enter Perfume gender: ");
+            gender = kb.next();
+        };
+        perfume1.setGender(gender);
+
+//        while(enteredStockLvl <= 0) {
+//            System.out.println("Please enter Perfume Stock Level: ");
+//            enteredStockLvl = kb.nextInt();
+//        };
+
+        while(enteredStockLvl <= 0) {
+            System.out.println("Please enter Perfume Stock Level: ");
+            String temp = kb.next();
+            try
+            {
+                enteredStockLvl = Integer.parseInt(temp);
+            }
+            catch (Exception e)
+            {
+                System.out.println("Please Try Again");
+            }
+        };
+        perfume1.setStockLvl(enteredStockLvl);
+
+        Gson gsonParser = new Gson();   // instantiate a Gson Parser
+
+        String result = gsonParser.toJson(perfume1);
+
+        return result;
     }
 
 }
