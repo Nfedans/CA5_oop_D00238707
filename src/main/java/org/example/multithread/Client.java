@@ -3,6 +3,7 @@ package org.example.multithread;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.example.DTOs.Perfume;
+import org.example.DTOs.SummaryData;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,19 +42,9 @@ public class Client
                     + "2. DisplayPerfumeById\t\texample: DisplayPerfumeById 13\n"
                     + "3. AddPerfumeToDb\t\t\n"
                     + "4. DelPerfumeByID\t\texample: DelPerfumeByID 23\n"
-//                    + "2. Retrieve WholeSaler by Perfume\n"
-//                    + "3. display the objects from the TreeMap\n"
-//                    + "4. PriorityQueue Sequence Simulation\n"
-//                    + "5. PriorityQueue Two-Field (Brand, stockLvl)\n"
-//                    + "6. Find all perfume from database\n"
-//                    + "7. Find one perfume from database by ID\n"
-//                    + "8. Delete one perfume from database by ID\n"
-//                    + "9. Add perfume to database\n"
-//                    + "10. List perfumes filtered by price\n"
-//                    + "11. Find all perfume from database as JSON\n"
-//                    + "12. Find one perfume from database by ID as JSON\n"
-                    + "5. Exit\n"
-                    + "Enter Option [1,5]";
+                    + "5. GetProductData\n"
+                    + "6. Exit\n"
+                    + "Enter Option [1,6]";
             System.out.println("\n" + MENU_ITEMS);
             String command = in.nextLine();
 
@@ -63,9 +54,7 @@ public class Client
             socketWriter.println(command);
 
             Scanner socketReader = new Scanner(socket.getInputStream());
-            //Scanner socketReader1 = new Scanner(socket.);// wait for, and retrieve the reply
 
-//            boolean continueLoop=true;
             while(!command.equals("Exit")) {
 
                 if (command.equals("DisplayAllPerfume"))  //we expect the server to return a time
@@ -86,7 +75,6 @@ public class Client
                     }
                     else
                     {
-
                         Perfume result = gsonParser.fromJson(res, Perfume.class);
                         display(result);
                     }
@@ -101,16 +89,7 @@ public class Client
                     System.out.println("Coming from server: Successfully added");
                     display(result);
                 }
-//                else if(command.startsWith("Add"))
-//                {
-//                    String input = socketReader.nextLine();
-//                    System.out.println("Client message: Response from server: " + input);
-//                }
-//                else// the user has entered the Echo command or an invalid command
-//                {
-//                    String input = socketReader.nextLine();
-//                    System.out.println("Client message: Response from server: \"" + input + "\"");
-//                }
+
                 else if(command.startsWith("DelPerfumeByID"))
                 {
                     String res = socketReader.nextLine();
@@ -124,6 +103,15 @@ public class Client
                         System.out.println(res);
                     }
 
+                }
+                else if(command.equals("GetProductData"))
+                {
+                    socketWriter.println(command);
+                    String res = socketReader.nextLine();
+
+                    SummaryData data = gsonParser.fromJson(res, SummaryData.class);
+                    System.out.println("Coming from server:");
+                    displayData(data);
                 }
 
                 System.out.println("\n" + MENU_ITEMS);
@@ -168,6 +156,14 @@ public class Client
             System.out.println("\tTarget Gender : " + p.getGender());
             System.out.println("\tStock Available : " + p.getStockLvl());
             System.out.println("------------------------------");
+    }
+
+    public void displayData(SummaryData s)
+    {
+        System.out.println("------------------------------");
+        System.out.println("\tTotal Stock : " + s.getTotalStock());
+        System.out.println("\tAmount of different products : " + s.getTotalProducts());
+        System.out.println("------------------------------");
     }
 
     public String enterPerfume()
@@ -248,11 +244,6 @@ public class Client
         };
         perfume1.setName(name);
 
-//        while(enteredSize < 1) {
-//            System.out.println("Please enter Perfume Size (ml): ");
-//            enteredSize = kb.nextInt();
-//        };
-
         while(enteredSize <= 0) {
             System.out.println("Please enter Perfume Size (ml): ");
             String temp = kb.next();
@@ -267,11 +258,6 @@ public class Client
         };
 
         perfume1.setSize(enteredSize);
-
-//        while(enteredPrice <= 0) {
-//            System.out.println("Please enter Perfume price: ");
-//            enteredPrice = kb.nextFloat();
-//        };
 
         while(enteredPrice <= 0) {
             System.out.println("Please enter Perfume price: ");
@@ -293,11 +279,6 @@ public class Client
             gender = kb.next();
         };
         perfume1.setGender(gender);
-
-//        while(enteredStockLvl <= 0) {
-//            System.out.println("Please enter Perfume Stock Level: ");
-//            enteredStockLvl = kb.nextInt();
-//        };
 
         while(enteredStockLvl <= 0) {
             System.out.println("Please enter Perfume Stock Level: ");
